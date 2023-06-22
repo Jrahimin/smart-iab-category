@@ -103,7 +103,7 @@
         ];
         const siteList = tableData.map(row => row.site);
         let table = $('#myTable').DataTable({
-            pageLength: 3,
+            pageLength: 10,
             lengthMenu: [
                 [3, 10, 25, 50, -1],
                 [3, 10, 25, 50, 'All'],
@@ -154,7 +154,7 @@
                     site: url,
                     iabCategories: [gptResponse]
                 };
-                table.order([0, 'desc']).row.add(newRow).draw();
+                table.order([1, 'desc']).row.add(newRow).draw();
                 $('#addRowModal').modal('hide');
                 $siteInput.val('');
             } catch (error) {
