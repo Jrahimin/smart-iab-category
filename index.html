@@ -177,11 +177,6 @@
                 await Promise.all([getIabCategoriesFromOpenAi(response.data), getKeywordsFromOpenAi(response.data)]).then((values) => {
                     const iabCategories = values[0];
                     const keywords = values[1];
-                    console.group();
-                    console.log('url content', values);
-                    console.log('iabCategories', iabCategories);
-                    console.log('keywords', keywords);
-                    console.groupEnd();
                     let newRow = {
                         id: tableData.length + 1,
                         site: url,
