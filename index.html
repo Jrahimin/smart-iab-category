@@ -154,7 +154,7 @@
                     site: url,
                     iabCategories: [gptResponse]
                 };
-                table.row.add(newRow).draw();
+                table.order([0, 'desc']).row.add(newRow).draw();
                 $('#addRowModal').modal('hide');
                 $siteInput.val('');
             } catch (error) {
