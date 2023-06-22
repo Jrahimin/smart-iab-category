@@ -83,26 +83,31 @@
         const baseUrl = 'http://localhost:3003/'; //can be set different port from env
         const tableData = [
             {
+                id: 1,
                 site: 'https://www.google.com',
                 iabCategories: ['Search Engine', 'Technology'],
                 keywords: [],
             },
             {
+                id: 2,
                 site: 'https://www.facebook.com',
                 iabCategories: ['Social Media', 'Communication'],
                 keywords: [],
             },
             {
+                id: 3,
                 site: 'https://www.amazon.com',
                 iabCategories: ['E-commerce', 'Shopping'],
                 keywords: [],
             },
             {
+                id: 4,
                 site: 'https://www.netflix.com',
                 iabCategories: ['Streaming', 'Entertainment'],
                 keywords: [],
             },
             {
+                id: 5,
                 site: 'https://www.nytimes.com',
                 iabCategories: ['News', 'Media'],
                 keywords: [],
@@ -119,6 +124,15 @@
             columns: [
                 {
                     targets: 0,
+                    title: 'Serial',
+                    data: 'id',
+                    render: function (data) {
+                        return data;
+                    },
+                    visible: false,
+                },
+                {
+                    targets: 1,
                     title: 'Site',
                     data: 'site',
                     render: function (data) {
@@ -126,7 +140,7 @@
                     }
                 },
                 {
-                    targets: 1,
+                    targets: 2,
                     title: 'IAB Categories',
                     data: 'iabCategories',
                     render: function (data) {
@@ -172,11 +186,13 @@
                     console.log('keywords', keywords);
                     console.groupEnd();
                     let newRow = {
+                        id: tableData.length + 1,
                         site: url,
                         iabCategories: iabCategories,
                         keywords: keywords,
                     };
-                    table.row.add(newRow).draw();
+                    tableData.push(newRow);
+                    table.order([0,'desc']).row.add(newRow).draw();
                     $('#addRowModal').modal('hide');
                     $siteInput.val('');
                 });
