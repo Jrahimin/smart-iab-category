@@ -74,7 +74,7 @@ app.post('/fetch-keywords', async (req, res) => {
         "messages": [
             {
                 "role": "system",
-                "content": "Give me few keywords from this text, this text has one main topic and few small topics. please consider the main topic only, ignore small ones. example: anti-vaccine views, Turkey, economic policies"
+                "content": "Give me top 5 keywords from this text, this text has one main topic and few small topics. please consider the main topic only, ignore small ones. example: anti-vaccine views, Turkey, economic policies"
             },
             {
                 "role": "user",
