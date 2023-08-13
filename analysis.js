@@ -8,7 +8,7 @@ const analysis = async (text, keyword) => {
         "messages": [
             {
                 "role": "system",
-                "content": `Act as an Ad-tech expert. read the content and suggest only yes/no based on keywords. keywords are - ${keyword}. Respond yes when any of that above mentioned keyword is somehow related to that content.`
+                "content": `Act as an Ad-tech expert. read the content and give only yes/no based on keywords. keywords are - ${keyword}. Respond 'yes' if any of that above mentioned keyword is related to that content.`
             },
             {
                 "role": "user",
@@ -31,7 +31,7 @@ const analysis = async (text, keyword) => {
 
         const data = response.data;
         if (response.status === 200) {
-            return data.choices[0]['message']['content'];
+            return (data.choices[0]['message']['content']).split('.')[0];
         } else {
             console.error('Error on else: ', data.error.message);
         }

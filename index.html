@@ -235,17 +235,33 @@
         });
 
         const $siteFile = $('#siteFile');
-        $('#uploadSubmit').on('click', async function () {
+        const $uploadSubmit = $('#uploadSubmit');
+        $siteFile.on('change',() => {
+            const downloadLinkSection = document.getElementById('download-link-section');
+            downloadLinkSection.style.display = 'none';
+            $uploadSubmit.text('Submit');
+            $uploadSubmit.prop('disabled', false);
+        })
+        $uploadSubmit.on('click', async function () {
+            const downloadLinkSection = document.getElementById('download-link-section');
+            $(this).text('Processing.....');
+            $(this).prop('disabled', true);
+            downloadLinkSection.style.display = 'none';
             let file = $siteFile[0].files[0];
             const formData = new FormData()
             formData.append('siteFile', file)
             const response = await axios.post(baseUrl + 'fileupload', formData);
 
             const data = await response.data;
-            const downloadLink = document.getElementById('downloadLink');
-            const downloadLinkSection = document.getElementById('download-link-section');
-            downloadLink.href = data.fileUrl;
-            downloadLinkSection.style.display = 'block';
+            if (data.fileUrl) {
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = data.fileUrl;
+                downloadLinkSection.style.display = 'block';
+                $(this).text('Processed! Upload new File.');
+            } else {
+                alert('Something Went Wrong!!!')
+            }
+
         });
 
         async function getIabCategoriesFromOpenAi(content) {

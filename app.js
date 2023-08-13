@@ -93,20 +93,23 @@ app.post('/fetch-keywords', async (req, res) => {
     }
 });
 
-app.post('/fileupload', upload.single('siteFile'), (req, res) => {
+app.post('/fileupload', upload.single('siteFile'), async (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ error: 'No file provided' });
+        return res.status(400).json({error: 'No file provided'});
     }
 
-    processExcelFile(req.file.filename)
-
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    return res.json({ fileUrl });
+    processExcelFile(req.file.filename).then(() => {
+        setTimeout(function () {
+            const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            return res.json({fileUrl});
+        }, 10000);
+    }).catch(err => {
+        return res.status(400).json({error: 'Process Failed'});
+    });
 });
 
-function processExcelFile(file) {
+async function processExcelFile(file) {
     const workbook = new Excel.Workbook();
-
     workbook.xlsx.readFile('uploads/'+file)
         .then(() => {
             // Get the first worksheet
@@ -127,7 +130,7 @@ function processExcelFile(file) {
                             const $ = cheerio.load(response.data);
                             const text = $('p').text();
                             row.getCell('D').value = await analysis(text, keywordRowData);
-                            return workbook.xlsx.writeFile('uploads/'+file);
+                            return workbook.xlsx.writeFile('uploads/' + file);
                         } catch (error) {
                             console.error(`Error: ${error}`);
                         }
@@ -136,7 +139,7 @@ function processExcelFile(file) {
             });
         })
         .catch((error) => {
-            console.error('Error reading the Excel file:', error.message);
+            console.error('Error reading the Excel file:', error.message)
         });
 }
 
