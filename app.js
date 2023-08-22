@@ -115,32 +115,50 @@ async function processExcelFile(file) {
             // Get the first worksheet
             const worksheet = workbook.getWorksheet(1);
             const lastColumnIndex = worksheet.getRow(1).cellCount;
-            const dobCol = worksheet.getColumn('D');
+            const dobCol = worksheet.getColumn('H');
             dobCol.header = 'Yes/No';
+            let counter = 1;
+            var promise = Promise.resolve();
 
             // Iterate over each row in the worksheet
             worksheet.eachRow(async (row, rowNumber) => {
-                if (rowNumber !== 1) {
-                    const urlRowData = row.getCell('B').value; // it is the urls
-                    const keywordRowData = row.getCell('C').value; // keywords
-                    if (urlRowData) {
-                        let url = urlRowData.hyperlink
-                        try {
-                            const response = await axios.get(url);
-                            const $ = cheerio.load(response.data);
-                            const text = $('p').text();
-                            row.getCell('D').value = await analysis(text, keywordRowData);
-                            return workbook.xlsx.writeFile('uploads/' + file);
-                        } catch (error) {
-                            console.error(`Error: ${error}`);
+                promise = promise.then(async function () {
+                    if (rowNumber !== 1) {
+                        const urlRowData = row.getCell('D').value; // it is the urls
+                        const keywordRowData = row.getCell('G').value; // keywords
+                        if (urlRowData) {
+                            let url = urlRowData.hyperlink
+                            console.log(url);
+                            try {
+                                const response = await axios.get(url);
+                                const $ = cheerio.load(response.data);
+                                const text = $('p').text();
+                                console.log(`Processing : ${rowNumber}`)
+                                row.getCell('H').value = await analysis(text, keywordRowData);
+                                if (workbook.xlsx.writeFile('uploads/' + file)) {
+                                    console.info(`Processed Done For: ${++counter}`);
+                                }
+                                return true;
+                            } catch (error) {
+                                console.info(`Error @ Counter ${++counter}`);
+                                console.error(`Error: ${error}`);
+                            }
                         }
                     }
-                }
+                    return new Promise(function (resolve) {
+                        setTimeout(resolve, 1);
+                    });
+                });
+
+            })
+            promise.then(function () {
+                console.log('Task finished.');
             });
         })
         .catch((error) => {
             console.error('Error reading the Excel file:', error.message)
         });
+
 }
 
 function extractCategories(categoryData) {
