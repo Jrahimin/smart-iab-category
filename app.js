@@ -11,6 +11,12 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+    res.sendFile('/index.html', { root: __dirname });
+});
+
 app.post('/fetch-url', async (req, res) => {
     const url = req.body.url;
     try {
