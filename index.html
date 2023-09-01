@@ -86,7 +86,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
     $(document).ready(function () {
-        const baseUrl = 'http://localhost:3003/'; //can be set different port from env
         const tableData = [
             {
                 id: 1,
@@ -173,7 +172,7 @@
             siteList.push(url);
 
             try {
-                const response = await axios.post(baseUrl + 'fetch-url', {url});
+                const response = await axios.post('/fetch-url', {url});
                 await Promise.all([getIabCategoriesFromOpenAi(response.data), getKeywordsFromOpenAi(response.data)]).then((values) => {
                     const iabCategories = values[0];
                     const keywords = values[1];
@@ -196,7 +195,7 @@
 
         async function getIabCategoriesFromOpenAi(content) {
             try {
-                const response = await axios.post(baseUrl + 'fetch-iab-categories', {content});
+                const response = await axios.post('/fetch-iab-categories', {content});
                 const data = response.data;
 
                 if (response.status === 200) {
@@ -213,7 +212,7 @@
 
         async function getKeywordsFromOpenAi(content) {
             try {
-                const response = await axios.post(baseUrl + 'fetch-keywords', {content});
+                const response = await axios.post('/fetch-keywords', {content});
                 const data = response.data;
 
                 if (response.status === 200) {
